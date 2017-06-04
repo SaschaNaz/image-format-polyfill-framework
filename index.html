@@ -5,7 +5,6 @@
         <title>Polymage</title>
         <script src="https://rawgit.com/systemjs/systemjs/master/dist/system.js"></script>
         <script>
-            SystemJS.config({ meta: { "./built/polymage.js": { format: "cjs" } } });
             (async () => {
                 const Polymage = (await SystemJS.import("./built/polymage.js")).default;
                 Polymage.register(".flif", imageAccess => {
