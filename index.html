@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Polymage</title>
+        <script src="https://rawgit.com/systemjs/systemjs/master/dist/system.js"></script>
+        <script>
+            SystemJS.config({ meta: { "./built/polymage.js": { format: "cjs" } } });
+            (async () => {
+                const Polymage = (await SystemJS.import("./built/polymage.js")).default;
+                Polymage.register(".flif", imageAccess => {
+                    alert("flif detected");
+                })
+                Polymage.observe();
+            })();
+        </script>
+    </head>
+    <body>
+        <img src="dummy.flif" />
+    </body>
+</html>

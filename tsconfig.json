@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "target": "es2017",
+        "declaration": true,
+        "sourceMap": true,
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "outDir": "built/"
+    }
+}
