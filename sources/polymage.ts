@@ -30,21 +30,21 @@ namespace Polymage {
     }
 
     let observing = false;
-    const observer = new MutationObserver(mutations => {
+    const observer = new MutationObserver(async (mutations) => {
         for (const mutation of mutations) {
-            for (const pair of select(Array.from(mutation.addedNodes))) {
+            for (const pair of await select(Array.from(mutation.addedNodes))) {
                 process(pair);
             }
             if (mutation.attributeName === "src" && mutation.target instanceof HTMLImageElement) {
-                process(generatePair(mutation.target));
+                process(await generatePair(mutation.target));
             }
         }
     })
-    export function observe() {
+    export async function observe() {
         observing = true;
         try {
             if (document.body) {
-                for (const pair of select(Array.from(document.body.children))) {
+                for (const pair of await select(Array.from(document.body.children))) {
                     process(pair);
                 }
             }
@@ -72,7 +72,9 @@ namespace Polymage {
                 target.canvas.width = width;
                 target.canvas.height = height;
                 context.putImageData(new ImageData(new Uint8ClampedArray(buffer), width, height), 0, 0);
-                target.image.src = URL.createObjectURL(await canvasConvertToBlob(target.canvas), { oneTimeOnly: true });
+                const blobUrl = URL.createObjectURL(await canvasConvertToBlob(target.canvas));
+                target.image.setAttribute("x-polymage-src", blobUrl)
+                target.image.src = blobUrl;
             }
         });
     }
@@ -81,16 +83,28 @@ namespace Polymage {
         element: HTMLImageElement;
         type: string;
     }
-    function select(nodes: Node[]): Pair[] {
+    async function select(nodes: Node[]): Promise<Pair[]> {
         // TODO: support data-url with mime type
         // TODO: support x-mime-type to urls without file extensions
         // TODO: support <picture> with <source type="(mime-type)" />
-        // TODO: support blob-url with mime type (with fetch())
-        return nodes.filter(node => node instanceof HTMLImageElement).map(generatePair).filter(pair => has(pair.type));
+        const pairs = await Promise.all(nodes.filter(node => node instanceof HTMLImageElement).map(generatePair))
+        return pairs.filter(pair => has(pair.type));
     }
-    function generatePair(item: HTMLImageElement) {
-        const match = item.src && item.src.match(extensionRegex);
-        return { element: item, type: match[0] }
+    async function generatePair(item: HTMLImageElement): Promise<Pair> {
+        if (!item.src) {
+            return { element: item, type: undefined };
+        }
+        if (item.src.startsWith("blob:") && item.src !== item.getAttribute("x-polymage-src")) {
+            try {
+                const response = await fetch(item.src);
+                const blob = await response.blob();
+                return { element: item, type: blob.type }
+            }
+            catch (e) {
+            }
+        }
+        
+        return { element: item, type: item.src.match(extensionRegex)[0] }
     }
 
     function canvasConvertToBlob(canvas: HTMLCanvasElement) {
