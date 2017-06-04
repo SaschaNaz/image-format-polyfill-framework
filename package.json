@@ -1,0 +1,26 @@
+{
+  "name": "polymage",
+  "version": "1.0.0",
+  "description": "A small framework to catch DOM and draw manually-decoded image",
+  "main": "lib/polymage.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SaschaNaz/polymage.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SaschaNaz/polymage/issues"
+  },
+  "homepage": "https://github.com/SaschaNaz/polymage#readme",
+  "devDependencies": {
+    "@types/jake": "0.0.28",
+    "ts-module-ignore": "^1.0.6"
+  }
+}
