@@ -66,6 +66,8 @@ namespace Polymage {
     function process(pair: Pair) {
         const callback = decoderMap.get(pair.type);
         const target: DrawTarget = { image: pair.element, canvas: document.createElement("canvas") }
+        // TODO: give data to decode
+        // TODO: onunload to allow decoders to abort
         callback({ 
             draw: async (buffer, width, height) => {
                 const context = target.canvas.getContext("2d");
