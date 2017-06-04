@@ -1,2 +1,2 @@
-# image-format-polyfill-framework
-A small framework to catch DOM and draw JS-decoded image
+# Polymage
+A small framework to catch DOM and draw manually-decoded image
